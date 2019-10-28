@@ -1,7 +1,11 @@
 import json
+import os
 from PIL import Image
 import numpy as np
+from timeit import default_timer as timer
+import datetime
 
+start = timer()
 
 dataset = {
     "info": {},
@@ -103,10 +107,24 @@ dataset['categories'].append({
     'skeleton': []
 })
 
+""" change the following variables according to your needs:
+
+data_dir: Path to your dataset
+image_dir: Path to your corresponding images from the dataset
+json_name: Destination path for your newly created json file in coco format
+
+"""
+
 sub_index = 0 # the index of ground truth instance
+data_dir = "F:/Downloads/train/train/annos/"
+image_dir = "F:/Downloads/train/train/image/"
+num_images = len(next(os.walk(data_dir))[2])
+print(num_images)
 for num in range(1,num_images+1):
-    json_name = '/.../val_annos/' + str(num).zfill(6)+'.json'
-    image_name = '/.../val/' + str(num).zfill(6)+'.jpg'
+    if num % 10000 == 0 :
+        print(num)
+    json_name = data_dir + str(num).zfill(6)+'.json'
+    image_name = image_dir + str(num).zfill(6)+'.jpg'
 
     if (num>=0):
         imag = Image.open(image_name)
@@ -230,11 +248,14 @@ for num in range(1,num_images+1):
                         'segmentation': seg,
                     })
 
-
-json_name = '/.../deepfashion2.json'
+print("Starting to dump dataset to new json coco file")
+json_name = 'F:/Downloads/train/train/annos_coco/training_coco.json'
 with open(json_name, 'w') as f:
   json.dump(dataset, f)
-
+end = timer()
+time_elapsed = start - end
+print("Done with dumping json!")
+print("Total time elapsed: %s" % str(datetime.timedelta(seconds=time_elapsed)))
 
 
 

@@ -2,10 +2,9 @@ import json
 import os
 from PIL import Image
 import numpy as np
-from timeit import default_timer as timer
-import datetime
+import time
 
-start = timer()
+tic = time.time()
 
 dataset = {
     "info": {},
@@ -116,11 +115,15 @@ json_name: Destination path for your newly created json file in coco format
 """
 
 sub_index = 0 # the index of ground truth instance
+# F:/Downloads/validation/validation/annos/
+# F:/Downloads/validation/validation/image/
+# F:/Downloads/train/train/image
+# F:/Downloads/train/train/annos
 data_dir = "F:/Downloads/train/train/annos/"
 image_dir = "F:/Downloads/train/train/image/"
 num_images = len(next(os.walk(data_dir))[2])
-print(num_images)
-for num in range(1,num_images+1):
+number_of_images_subset = 1000
+for num in range(1, number_of_images_subset + 1): # num_images + 1
     if num % 10000 == 0 :
         print(num)
     json_name = data_dir + str(num).zfill(6)+'.json'
@@ -249,13 +252,13 @@ for num in range(1,num_images+1):
                     })
 
 print("Starting to dump dataset to new json coco file")
-json_name = 'F:/Downloads/train/train/annos_coco/training_coco.json'
+# F:/mini_deepfashion2
+# F:/Downloads/validation/validation/annos_coco/validation_coco.json
+json_name = 'F:/mini_deepfashion2/training_coco.json'
 with open(json_name, 'w') as f:
   json.dump(dataset, f)
-end = timer()
-time_elapsed = start - end
 print("Done with dumping json!")
-print("Total time elapsed: %s" % str(datetime.timedelta(seconds=time_elapsed)))
+print('Done (t={:0.2f}s)'.format(time.time() - tic))
 
 
 
